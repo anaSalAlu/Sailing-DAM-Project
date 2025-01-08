@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 
 /* Lombok */
 @Data
+
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 public class TripType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -23,10 +25,8 @@ public class TripType implements Serializable {
 		GROUP, PRIVATE
 	}
 
-	/* Lombok */
 	@EqualsAndHashCode.Include
 	private Long id;
-
 	private String title;
 
 	private Category category;
@@ -35,8 +35,8 @@ public class TripType implements Serializable {
 
 	private double price;
 
-	private String departures;	// Comma-separated values: 9:30;11:30;13:30
- 
+	private String departures;
+
 	private int duration;
 
 	private int maxPlaces;
