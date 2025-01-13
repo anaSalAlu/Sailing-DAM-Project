@@ -5,8 +5,23 @@ import java.util.List;
 
 import org.hibernate.annotations.Formula;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +35,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "trips")
 public class Trip implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,35 +52,38 @@ public class Trip implements Serializable {
 		RESERVED, RESCHEDULED, CANCELLED, DONE
 	}
 
-	/* Lombok */
 	@EqualsAndHashCode.Include
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false, updatable = false)
+	@NotNull
+	@JsonProperty("id")
 	private Long id;
 
-	private Client client;
+	@Column(name = "client_username", length = 25, nullable = false)
+	@NotEmpty
+	@NotNull
+	@JsonProperty("client")
+	private String client;
 
+	@Column(name = "places", nullable = false)
+	@NotNull
 	private int places;
 
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "departure_id", referencedColumnName = "id", nullable = false)
+	@NotNull
 	private Departure departure;
-	
-	/* Lombok */
-	@Singular("track") 
+
+	@OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@Singular("track")
 	private List<Action> tracking;
 
-	/* JPA */
-	@Enumerated(EnumType.STRING) // Stored as string
-	/* Hibernate */
-	@Formula("(SELECT CASE a.type "
-			+ "  WHEN '" + Action.BOOKING + "' THEN '" + Trip.RESERVED + "' " 
-			+ "  WHEN '" + Action.RESCHEDULING + "' THEN '" + Trip.RESCHEDULED + "' "
-			+ "  WHEN '" + Action.CANCELLATION + "' THEN '" + Trip.CANCELLED + "' "
-			+ "  WHEN '" + Action.DONE + "' THEN '" + Trip.DONE + "' "
-			+ "  ELSE NULL END "
-			+ "FROM actions a WHERE a.trip_id = id AND a.date = "
-			+ "  (SELECT MAX(last.date) FROM actions last "
-			+ "   WHERE last.trip_id = a.trip_id)"
-			+ ")")
-	// Lombok
+	@Enumerated(EnumType.STRING)
+	@Formula("(SELECT CASE a.type " + "  WHEN 'BOOKING' THEN 'RESERVED' " + "  WHEN 'RESCHEDULING' THEN 'RESCHEDULED' "
+			+ "  WHEN 'CANCELLATION' THEN 'CANCELLED' " + "  WHEN 'DONE' THEN 'DONE' " + "  ELSE NULL END "
+			+ "FROM actions a WHERE a.trip_id = id AND a.date = " + "  (SELECT MAX(last.date) FROM actions last "
+			+ "   WHERE last.trip_id = a.trip_id))")
 	@Setter(AccessLevel.NONE)
 	private Status status;
-	
 }
