@@ -16,7 +16,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "users")
 @DiscriminatorValue(User.ADMIN)
 public class Admin extends User implements Serializable {
 

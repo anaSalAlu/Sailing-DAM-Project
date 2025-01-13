@@ -17,7 +17,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "actions")
 @DiscriminatorValue(Action.RESCHEDULING)
 public class Rescheduling extends Action {
 	private static final long serialVersionUID = 1L;
