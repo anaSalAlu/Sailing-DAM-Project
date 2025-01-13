@@ -60,7 +60,6 @@ public abstract class Action implements Serializable {
 	@Column(name = "id")
 	@NotEmpty
 	@JsonProperty("id")
-
 	protected Long id;
 
 	@NonNull
