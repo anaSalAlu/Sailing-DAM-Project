@@ -14,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,10 +49,12 @@ public class Departure implements Serializable {
 	private TripType tripType;
 
 	// Fecha de la salida
+	@Temporal(TemporalType.DATE)
 	@Column(name = "date", nullable = false)
 	private Date date;
 
 	// Hora de la salida
+	@Temporal(TemporalType.TIME)
 	@Column(name = "departure", nullable = false)
 	private Date departure;
 

@@ -39,6 +39,7 @@ import jakarta.websocket.server.PathParam;
 @RestController
 @RequestMapping("/users")
 @SecurityRequirement(name = "Bearer Authentication")
+@Validated
 public class UserController {
 	@Autowired
 	private UserService userService;

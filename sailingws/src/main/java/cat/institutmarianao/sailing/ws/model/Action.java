@@ -63,23 +63,19 @@ public abstract class Action implements Serializable {
 	@Id
 	@Column(name = "id")
 	@NotEmpty
-	@Size(min = 0, max = 20, message = "Text must be at most 20 characters")
 	@JsonProperty("id")
 	protected Long id;
 
 	@NonNull
 	@Enumerated(EnumType.STRING)
-	@Column(name = "type", length = 31)
+	@Column(name = "type", length = 31, insertable = false, updatable = false)
 	@NotBlank
-	@Size(min = 0, max = 4, message = "Text must be at most 20 characters")
 	@JsonProperty("type")
 	protected Type type;
 
-	@NonNull
+
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "performer_username", referencedColumnName = "username")
-	@NotBlank
-	@Size(min = 0, max = 255, message = "Text must be at most 20 characters")
 	@JsonProperty("performer_username")
 	protected User performer;
 

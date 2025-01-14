@@ -17,6 +17,8 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -52,14 +54,14 @@ public abstract class User implements Serializable {
 	@EqualsAndHashCode.Include
 	@Id
 	@Column(name = "username")
-	@Nonnull
+	@NotNull
 	protected String username;
 
 	@Column(name = "password")
 	@Nonnull
 	protected String password;
 	
-	@Column(name = "role")
+	@Column(name = "role", insertable = false, updatable = false)
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	protected Role role;
