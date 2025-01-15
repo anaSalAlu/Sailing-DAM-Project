@@ -25,6 +25,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 @RequestMapping("/triptypes")
 public class TripTypeController {
 
+	@Autowired
+	
 	/* Swagger */
 	@Operation(summary = "Find all trip types filtered", description = "Retrieve all trip types filtered from the database.")
 	@ApiResponse(responseCode = "200", content = {
