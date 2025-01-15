@@ -26,6 +26,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 public class TripTypeController {
 
 	@Autowired
+	TripTypeService tripTypeService;
 	
 	/* Swagger */
 	@Operation(summary = "Find all trip types filtered", description = "Retrieve all trip types filtered from the database.")
@@ -40,8 +41,8 @@ public class TripTypeController {
 								@RequestParam(value = "maxPlacesTo", required = false) @PositiveOrZero Integer maxPlacesTo,
 								@RequestParam(value = "durationFrom", required = false) @PositiveOrZero Integer durationFrom,
 								@RequestParam(value = "durationTo", required = false) @PositiveOrZero Integer durationTo) {
-		// TODO Find all trip types filtered
-		return null;
+		// Find all trip types filtered
+		return tripTypeService.findAll(category, priceFrom, priceTo, maxPlacesFrom, maxPlacesTo, durationFrom, durationTo);
 	}
 
 	/* Swagger */
@@ -51,7 +52,7 @@ public class TripTypeController {
 	/**/
 	@GetMapping("/get/by/id/{id}")
 	public TripType findById(@PathVariable("id") @NotNull Long id) {
-		// TODO Get trip type by id
-		return null;
+		// Get trip type by id
+		return tripTypeService.getById(id);
 	}
 }
