@@ -1,11 +1,7 @@
 package cat.institutmarianao.sailing.ws.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -47,67 +43,11 @@ public class TripType implements Serializable {
 	@JsonProperty("id")
 	private Long id;
 
-	// Mapa para manejar traducciones de 'title'
-	private Map<String, String> titleTranslations = new HashMap<>();
-
-	@JsonAnyGetter
-	public Map<String, String> getTitleTranslations() {
-		return titleTranslations;
-	}
-
-	@JsonAnySetter
-	public void setTitleTranslations(String language, String translation) {
-		titleTranslations.put(language, translation);
-	}
-
-	@JsonProperty("title_en")
-	public String getTitleEn() {
-		return titleTranslations.get("en");
-	}
-
-	@JsonProperty("title_es")
-	public String getTitleEs() {
-		return titleTranslations.get("es");
-	}
-
-	@JsonProperty("title_ca")
-	public String getTitleCa() {
-		return titleTranslations.get("ca");
-	}
-
 	// La categoría del viaje (GROUP o PRIVATE)
 	@Enumerated(EnumType.STRING) // Guarda el valor como String en la base de datos
 	@Column(name = "category", nullable = false)
 	@JsonProperty("category")
 	private Category category;
-
-	// Mapa para manejar traducciones de 'description'
-	private Map<String, String> descriptionTranslations = new HashMap<>();
-
-	@JsonAnyGetter
-	public Map<String, String> getDescriptionTranslations() {
-		return descriptionTranslations;
-	}
-
-	@JsonAnySetter
-	public void setDescriptionTranslations(String language, String translation) {
-		descriptionTranslations.put(language, translation);
-	}
-
-	@JsonProperty("description_en")
-	public String getDescriptionEn() {
-		return descriptionTranslations.get("en");
-	}
-
-	@JsonProperty("description_es")
-	public String getDescriptionEs() {
-		return descriptionTranslations.get("es");
-	}
-
-	@JsonProperty("description_ca")
-	public String getDescriptionCa() {
-		return descriptionTranslations.get("ca");
-	}
 
 	// El precio del viaje
 	@Column(name = "price", nullable = false)

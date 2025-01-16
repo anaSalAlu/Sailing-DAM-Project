@@ -1,14 +1,10 @@
 package cat.institutmarianao.sailing.ws.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.annotations.Formula;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -73,34 +69,6 @@ public class Trip implements Serializable {
 	@NotNull
 	@JsonProperty("client") // Nombre del campo en el JSON
 	private String client;
-
-	// Mapa para manejar traducciones de 'status'
-	private Map<String, String> statusTranslations = new HashMap<>();
-
-	@JsonAnyGetter
-	public Map<String, String> getStatusTranslations() {
-		return statusTranslations;
-	}
-
-	@JsonAnySetter
-	public void setStatusTranslations(String language, String translation) {
-		statusTranslations.put(language, translation);
-	}
-
-	@JsonProperty("status_en")
-	public String getStatusEn() {
-		return statusTranslations.get("en");
-	}
-
-	@JsonProperty("status_es")
-	public String getStatusEs() {
-		return statusTranslations.get("es");
-	}
-
-	@JsonProperty("status_ca")
-	public String getStatusCa() {
-		return statusTranslations.get("ca");
-	}
 
 	@Column(name = "places", nullable = false)
 	@NotNull

@@ -1,11 +1,7 @@
 package cat.institutmarianao.sailing.ws.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -21,12 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-<<<<<<< HEAD
-=======
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
->>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -40,7 +31,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public abstract class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -58,85 +49,23 @@ public abstract class User implements Serializable {
 	@EqualsAndHashCode.Include
 	@Id
 	@Column(name = "username")
-<<<<<<< HEAD
 	@Nonnull
 	@JsonProperty("user_name")
-=======
 	@NotNull
->>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 	protected String username;
 
 	@Column(name = "password")
 	@Nonnull
 	@JsonIgnore
 	protected String password;
-<<<<<<< HEAD
 
-	@Column(name = "role")
-=======
-	
 	@Column(name = "role", insertable = false, updatable = false)
->>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	@JsonProperty("role")
 	protected Role role;
 
-	// Mapa para manejar traducciones de 'role'
-	private Map<String, String> roleTranslations = new HashMap<>();
-
-	@JsonAnyGetter
-	public Map<String, String> getRoleTranslations() {
-		return roleTranslations;
-	}
-
-	@JsonAnySetter
-	public void setRoleTranslations(String language, String translation) {
-		roleTranslations.put(language, translation);
-	}
-
-	@JsonProperty("role_en")
-	public String getRoleEn() {
-		return roleTranslations.get("en");
-	}
-
-	@JsonProperty("role_es")
-	public String getRoleEs() {
-		return roleTranslations.get("es");
-	}
-
-	@JsonProperty("role_ca")
-	public String getRoleCa() {
-		return roleTranslations.get("ca");
-	}
-
-	// Mapa para manejar traducciones de 'user_info'
-	private Map<String, String> userInfo = new HashMap<>();
-
-	@JsonAnyGetter
-	public Map<String, String> getUserInfo() {
-		return userInfo;
-	}
-
-	@JsonAnySetter
-	public void setUserInfo(String language, String translation) {
-		userInfo.put(language, translation);
-	}
-
-	@JsonProperty("user_info_en")
-	public String getUserInfoEn() {
-		return userInfo.get("en");
-	}
-
-	@JsonProperty("user_info_es")
-	public String getUserInfoEs() {
-		return userInfo.get("es");
-	}
-
-	@JsonProperty("user_info_ca")
-	public String getUserInfoCa() {
-		return userInfo.get("ca");
-	}
+	public abstract String getInfo();
 
 	public boolean isAdmin() {
 		return false;
