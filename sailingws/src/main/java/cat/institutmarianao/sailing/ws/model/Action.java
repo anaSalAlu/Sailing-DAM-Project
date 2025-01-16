@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -24,6 +26,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -37,9 +40,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 @Table(name = "actions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "action_type")
+@DiscriminatorColumn(name = "type", discriminatorType=DiscriminatorType.STRING)
 public abstract class Action implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -64,15 +68,14 @@ public abstract class Action implements Serializable {
 
 	@NonNull
 	@Enumerated(EnumType.STRING)
-	@Column(name = "type", length = 31)
+	@Column(name = "type", length = 31, insertable = false, updatable = false)
 	@NotBlank
 	@JsonProperty("type")
 	protected Type type;
 
-	@NonNull
+
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "performer_username", referencedColumnName = "username")
-	@NotBlank
 	@JsonProperty("performer_username")
 	protected User performer;
 

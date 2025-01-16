@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,6 +21,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+<<<<<<< HEAD
+=======
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+>>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -33,7 +40,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role")
+@DiscriminatorColumn(name = "role", discriminatorType=DiscriminatorType.STRING)
 public abstract class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -51,16 +58,25 @@ public abstract class User implements Serializable {
 	@EqualsAndHashCode.Include
 	@Id
 	@Column(name = "username")
+<<<<<<< HEAD
 	@Nonnull
 	@JsonProperty("user_name")
+=======
+	@NotNull
+>>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 	protected String username;
 
 	@Column(name = "password")
 	@Nonnull
 	@JsonIgnore
 	protected String password;
+<<<<<<< HEAD
 
 	@Column(name = "role")
+=======
+	
+	@Column(name = "role", insertable = false, updatable = false)
+>>>>>>> branch 'master' of https://github.com/anaSalAlu/Sailing-DAM-Project.git
 	@Nonnull
 	@Enumerated(EnumType.STRING)
 	@JsonProperty("role")

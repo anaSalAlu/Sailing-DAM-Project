@@ -2,6 +2,7 @@ package cat.institutmarianao.sailing.ws.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cat.institutmarianao.sailing.ws.model.TripType;
 import cat.institutmarianao.sailing.ws.model.TripType.Category;
+import cat.institutmarianao.sailing.ws.service.TripTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,6 +27,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 @RequestMapping("/triptypes")
 public class TripTypeController {
 
+	@Autowired
+	TripTypeService tripTypeService;
+	
 	/* Swagger */
 	@Operation(summary = "Find all trip types filtered", description = "Retrieve all trip types filtered from the database.")
 	@ApiResponse(responseCode = "200", content = {
@@ -38,8 +43,8 @@ public class TripTypeController {
 								@RequestParam(value = "maxPlacesTo", required = false) @PositiveOrZero Integer maxPlacesTo,
 								@RequestParam(value = "durationFrom", required = false) @PositiveOrZero Integer durationFrom,
 								@RequestParam(value = "durationTo", required = false) @PositiveOrZero Integer durationTo) {
-		// TODO Find all trip types filtered
-		return null;
+		// Find all trip types filtered
+		return tripTypeService.findAll(category, priceFrom, priceTo, maxPlacesFrom, maxPlacesTo, durationFrom, durationTo);
 	}
 
 	/* Swagger */
@@ -49,7 +54,7 @@ public class TripTypeController {
 	/**/
 	@GetMapping("/get/by/id/{id}")
 	public TripType findById(@PathVariable("id") @NotNull Long id) {
-		// TODO Get trip type by id
-		return null;
+		// Get trip type by id
+		return tripTypeService.getById(id);
 	}
 }
