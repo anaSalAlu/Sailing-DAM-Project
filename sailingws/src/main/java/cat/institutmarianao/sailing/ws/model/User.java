@@ -2,6 +2,9 @@ package cat.institutmarianao.sailing.ws.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -10,23 +13,17 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-/* Swagger */
 @Schema(oneOf = { Client.class, Admin.class }, discriminatorProperty = "role")
-/* Lombok */
 @Data
 @NoArgsConstructor
 @SuperBuilder
@@ -34,11 +31,10 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public abstract class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	/* Values for role - MUST be constants (can not be enums) */
 	public static final String ADMIN = "ADMIN";
 	public static final String CLIENT = "CLIENT";
 
@@ -50,26 +46,28 @@ public abstract class User implements Serializable {
 	public static final int MAX_USERNAME = 25;
 	public static final int MIN_PASSWORD = 10;
 
-	/* Lombok */
 	@EqualsAndHashCode.Include
 	@Id
 	@Column(name = "username")
+	@Nonnull
+	@JsonProperty("user_name")
 	@NotNull
 	protected String username;
 
 	@Column(name = "password")
 	@Nonnull
+	@JsonIgnore
 	protected String password;
-	
+
 	@Column(name = "role", insertable = false, updatable = false)
 	@Nonnull
 	@Enumerated(EnumType.STRING)
+	@JsonProperty("role")
 	protected Role role;
-	
-	public abstract String getInfo(); 
-	
+
+	public abstract String getInfo();
+
 	public boolean isAdmin() {
 		return false;
 	}
-
 }
