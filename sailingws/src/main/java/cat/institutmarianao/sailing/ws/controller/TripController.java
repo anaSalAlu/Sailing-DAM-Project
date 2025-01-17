@@ -3,6 +3,7 @@ package cat.institutmarianao.sailing.ws.controller;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,8 @@ import cat.institutmarianao.sailing.ws.validation.groups.OnActionCreate;
 import cat.institutmarianao.sailing.ws.validation.groups.OnTripCreate;
 import cat.institutmarianao.sailing.ws.model.Trip.Status;
 import cat.institutmarianao.sailing.ws.model.TripType.Category;
+import cat.institutmarianao.sailing.ws.service.TripService;
+import cat.institutmarianao.sailing.ws.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,6 +42,9 @@ import jakarta.validation.constraints.NotNull;
 @Validated
 public class TripController {
 
+	@Autowired
+	private TripService tripService;
+	
 	@Operation(summary = "Retrieve all trips filtered", description = "Retrieve all trips filtered from the database.")
 	@ApiResponse(responseCode = "200", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Trip.class))) }, description = "Trips retrieved ok")
@@ -48,8 +54,8 @@ public class TripController {
 											@RequestParam(value = "client", required = false) String clientUsername,
 											@RequestParam(value = "from", required = false) @DateTimeFormat(pattern = SailingWsApplication.DATE_PATTERN) @Parameter(description = SailingWsApplication.DATE_PATTERN) Date from,
 											@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = SailingWsApplication.DATE_PATTERN) @Parameter(description = SailingWsApplication.DATE_PATTERN) Date to) {
-		// TODO Retrieve all trips filtered
-		return null;
+		// Retrieve all trips filtered
+		return tripService.findAll(category, status, clientUsername, from, to);
 	}
 
 	@Operation(summary = "Retrieve all trips filtered by client username", description = "Retrieve all trips filtered by client username from the database.")
@@ -62,8 +68,8 @@ public class TripController {
 			@RequestParam(value = "from", required = false) @DateTimeFormat(pattern = SailingWsApplication.DATE_PATTERN) @Parameter(description = SailingWsApplication.DATE_PATTERN) Date from,
 			@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = SailingWsApplication.DATE_PATTERN) @Parameter(description = SailingWsApplication.DATE_PATTERN) Date to) {
 
-		// TODO Retrieve all trips filtered by client username
-		return null;
+		// Retrieve all trips filtered by client username
+		return tripService.getByUsername(username, category, status, from, to);
 	}
 
 	/* Swagger */
@@ -73,8 +79,8 @@ public class TripController {
 	/**/
 	@GetMapping("/get/by/id/{id}")
 	public Trip findById(@PathVariable("id") @NotNull Long id) {
-		// TODO Get trip by id
-		return null;
+		// Get trip by id
+		return tripService.getById(id);
 	}
 	
 	
@@ -85,8 +91,8 @@ public class TripController {
 			@Content() }, description = "Error saving the trip. See response body for more details")
 	@PostMapping(value = "/save")
 	public Trip save(@RequestBody @Validated(OnTripCreate.class) @NotNull Trip trip) {
-		// TODO Save a trip
-		return null;
+		// Save a trip
+		return tripService.save(trip);
 	}
 
 	/* Swagger */
@@ -96,7 +102,7 @@ public class TripController {
 	/**/
 	@PostMapping("/save/action")
 	public Action saveAction(@RequestBody @Validated(OnActionCreate.class) Action action) {
-		// TODO Save an action of a trip (in its tracking)
-		return null;
+		// Save an action of a trip (in its tracking)
+		return tripService.saveAction(action);
 	}
 }
