@@ -21,7 +21,6 @@ import cat.institutmarianao.sailing.ws.security.JwtUtils;
 import cat.institutmarianao.sailing.ws.service.TripService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Validated
@@ -30,16 +29,16 @@ public class TripServiceImpl implements TripService {
 
 	@Autowired
 	private TripRepository tripRepository;
-	
+
 	@Autowired
 	private ActionRepository actionRepository;
 
 	@Autowired
 	private MessageSource messageSource;
-	
+
 	@Autowired
 	private JwtUtils jwtUtils;
-	
+
 	@Override
 	public List<Trip> findAll(Category category, Status status, String clientUsername, Date from, Date to) {
 		return tripRepository.findAllByFilters(category, status, clientUsername, from, to);
@@ -47,45 +46,59 @@ public class TripServiceImpl implements TripService {
 
 	@Override
 	public Trip getById(@NotNull Long id) {
-		if (!jwtUtils.isAdmin()) 
-			throw new ForbiddenException(messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
-		
-		return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(messageSource.getMessage("error.NotFound.resource.by.id", new String[] { "Id", id.toString() }, LocaleContextHolder.getLocale())));
+		if (!jwtUtils.isAdmin()) {
+			throw new ForbiddenException(
+					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+		}
+
+		return tripRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException(messageSource.getMessage("error.NotFound.resource.by.id",
+						new String[] { "Id", id.toString() }, LocaleContextHolder.getLocale())));
 	}
 
 	@Override
 	public List<Trip> getByUsername(@NotNull String username, Category category, Status status, Date from, Date to) {
-		if (!jwtUtils.isAdmin()) 
-			throw new ForbiddenException(messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
-		
+		if (!jwtUtils.isAdmin()) {
+			throw new ForbiddenException(
+					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+		}
+
 		return tripRepository.findAllByFilters(category, status, username, from, to);
 	}
 
 	@Override
 	public Trip save(@NotNull @Valid Trip trip) {
-	    if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) 
-	        throw new ForbiddenException(messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
-	    
-	    if (tripRepository.existsById(trip.getId()))
-	        throw new ValidationException(messageSource.getMessage("error.UserService.username.exists", new String[]{trip.getId().toString()}, LocaleContextHolder.getLocale()));
-	    
-	    return tripRepository.saveAndFlush(trip);
+		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
+			throw new ForbiddenException(
+					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+		}
+
+		if (tripRepository.existsById(trip.getId())) {
+			throw new ValidationException(messageSource.getMessage("error.UserService.username.exists",
+					new String[] { trip.getId().toString() }, LocaleContextHolder.getLocale()));
+		}
+
+		return tripRepository.saveAndFlush(trip);
 	}
 
 	@Override
 	public boolean existsById(@NotNull Long id) {
 		return tripRepository.existsById(id);
 	}
-	
+
 	@Override
 	public Action saveAction(@NotNull @Valid Action action) {
-		 if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) 
-	            throw new ForbiddenException(messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
-	        
-		 if (actionRepository.existsById(action.getId()))
-	            throw new ValidationException (messageSource.getMessage("error.UserService.username.exists", new String[] { action.getId().toString() }, LocaleContextHolder.getLocale()));
-	        
-		 return actionRepository.saveAndFlush(action);
+		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
+			throw new ForbiddenException(
+					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+		}
+
+		if (actionRepository.existsById(action.getId())) {
+			throw new ValidationException(messageSource.getMessage("error.UserService.username.exists",
+					new String[] { action.getId().toString() }, LocaleContextHolder.getLocale()));
+		}
+
+		return actionRepository.saveAndFlush(action);
 	}
 
 }
