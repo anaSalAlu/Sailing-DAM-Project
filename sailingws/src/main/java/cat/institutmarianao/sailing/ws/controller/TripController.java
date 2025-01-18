@@ -22,8 +22,6 @@ import cat.institutmarianao.sailing.ws.validation.groups.OnActionCreate;
 import cat.institutmarianao.sailing.ws.validation.groups.OnTripCreate;
 import cat.institutmarianao.sailing.ws.model.Trip.Status;
 import cat.institutmarianao.sailing.ws.model.TripType.Category;
-import cat.institutmarianao.sailing.ws.service.TripService;
-import cat.institutmarianao.sailing.ws.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,9 +40,7 @@ import jakarta.validation.constraints.NotNull;
 @Validated
 public class TripController {
 
-	@Autowired
 	private TripService tripService;
-	
 	@Operation(summary = "Retrieve all trips filtered", description = "Retrieve all trips filtered from the database.")
 	@ApiResponse(responseCode = "200", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Trip.class))) }, description = "Trips retrieved ok")
@@ -69,7 +65,6 @@ public class TripController {
 			@RequestParam(value = "to", required = false) @DateTimeFormat(pattern = SailingWsApplication.DATE_PATTERN) @Parameter(description = SailingWsApplication.DATE_PATTERN) Date to) {
 
 		// Retrieve all trips filtered by client username
-		return tripService.getByUsername(username, category, status, from, to);
 	}
 
 	/* Swagger */

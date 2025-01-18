@@ -27,8 +27,6 @@ public class TripTypeServiceImpl implements TripTypeService {
 	@Autowired
 	private MessageSource messageSource;
 	
-	@Autowired
-	private JwtUtils jwtUtils;
 	
 	@Override
 	public List<TripType> findAll(Category category, Double priceFrom, Double priceTo, Integer maxPlacesFrom,
