@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +28,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @NoArgsConstructor
 @SuperBuilder
-
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "departures")
@@ -37,32 +37,32 @@ public class Departure implements Serializable {
 
 	public static final String TZ = "Europe/Madrid";
 
-	/* Lombok: */
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ID generado automáticamente
+	@Column(name = "id", nullable = false, updatable = false)
+	@NotNull(message = "ID cannot be null")
 	private Long id;
 
-	// Relación con la entidad TripType
-	@ManyToOne(fetch = FetchType.LAZY) // Relación Many-to-One con TripType
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "trip_type_id", nullable = false)
+	@NotNull(message = "Trip type cannot be null")
 	private TripType tripType;
 
-	// Fecha de la salida
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date", nullable = false)
+	@NotNull(message = "Date cannot be null")
 	private Date date;
 
-	// Hora de la salida
 	@Temporal(TemporalType.TIME)
 	@Column(name = "departure", nullable = false)
+	@NotNull(message = "Departure time cannot be null")
 	private Date departure;
 
 	/* Hibernate: */
-	// Consulta personalizada para obtener las plazas reservadas
 	@Formula("(SELECT COALESCE(SUM(t.places), 0) " + "FROM trips t INNER JOIN actions a ON a.trip_id = t.id "
 			+ "WHERE a.type <> '" + Action.CANCELLATION + "' AND " + "t.departure_id = id AND "
 			+ "a.date = (SELECT MAX(last.date) FROM actions last WHERE last.trip_id = a.trip_id) " + ")")
-	@Setter(AccessLevel.NONE) // No queremos un setter para este campo, ya que es calculado
+	@Setter(AccessLevel.NONE)
 	private int bookedPlaces;
 }

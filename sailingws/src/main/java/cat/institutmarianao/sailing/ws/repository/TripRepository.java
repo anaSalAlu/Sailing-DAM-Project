@@ -13,7 +13,15 @@ import cat.institutmarianao.sailing.ws.model.TripType.Category;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-	@Query("SELECT t FROM Trip t " + "JOIN t.departure d " + "JOIN d.tripType tp " + "WHERE "
+//	@Query("SELECT t FROM Trip t JOIN t.departure d JOIN d.tripType tp WHERE "
+//			+ "(:category IS NULL OR tp.category = :category) AND " + "(:status IS NULL OR t.status = :status) AND "
+//			+ "(:clientUsername IS NULL OR t.client LIKE %:clientUsername%) AND "
+//			+ "(:from IS NULL OR d.date >= :from) AND " + "(:to IS NULL OR d.date <= :to) "
+//			+ "ORDER BY tp.category ASC")
+//	List<Trip> findAllByFilters(@Param("category") Category category, @Param("status") Status status,
+//			@Param("clientUsername") String clientUsername, @Param("from") Date from, @Param("to") Date to);
+
+	@Query("SELECT t FROM Trip t JOIN t.departure d JOIN d.tripType tp WHERE "
 			+ "(:category IS NULL OR tp.category = :category) AND " + "(:status IS NULL OR t.status = :status) AND "
 			+ "(:clientUsername IS NULL OR t.client LIKE %:clientUsername%) AND "
 			+ "(:from IS NULL OR d.date >= :from) AND " + "(:to IS NULL OR d.date <= :to) "

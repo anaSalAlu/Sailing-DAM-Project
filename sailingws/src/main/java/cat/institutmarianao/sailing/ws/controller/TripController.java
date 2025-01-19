@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotNull;
 
 @Tag(name = "Trip", description = "Trip API")
@@ -92,16 +93,36 @@ public class TripController {
 		return tripService.save(trip);
 	}
 
-	/* Swagger */
+//	@Operation(summary = "Save a trip", description = "Saves a trip in the database. The response is the stored trip from the database.")
+//	@ApiResponse(responseCode = "200", content = {
+//			@Content(mediaType = "application/json", schema = @Schema(implementation = Trip.class)) }, description = "Trip saved ok")
+//	@ApiResponse(responseCode = "500", content = {
+//			@Content() }, description = "Error saving the trip. See response body for more details")
+//	@PostMapping(value = "/save")
+//	public Trip save(@RequestBody @Validated(OnTripCreate.class) @NotNull Trip trip) {
+//		return tripService.save(trip);
+//	}
+
+//	/* Swagger */
+//	@Operation(summary = "Save an action of a trip (in its tracking). Action at the end of trip tracking")
+//	@ApiResponse(responseCode = "200", content = {
+//			@Content(mediaType = "application/json", schema = @Schema(implementation = Action.class)) }, description = "Trip action saved ok")
+//	/**/
+//	@PostMapping("/save/action")
+//	public Action saveAction(@RequestBody @Validated(OnActionCreate.class) Action action) {
+//		// Save an action of a trip (in its tracking)
+//		return tripService.saveAction(action);
+//	}
+
 	@Operation(summary = "Save an action of a trip (in its tracking). Action at the end of trip tracking")
 	@ApiResponse(responseCode = "200", content = {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = Action.class)) }, description = "Trip action saved ok")
-	/**/
 	@PostMapping("/save/action")
-	public Action saveAction(@RequestBody @Validated(OnActionCreate.class) Action action) {
-		// Save an action of a trip (in its tracking)
+	public Action saveAction(@RequestBody @Validated(OnActionCreate.class) @NotNull Action action) {
+		// Verificación de validación del tipo y el viaje
+		if (action.getType() == null || action.getTrip() == null) {
+			throw new ValidationException("El tipo de acción y el viaje son obligatorios.");
+		}
 		return tripService.saveAction(action);
 	}
 }
-// Save an action of a trip (in its tracking)
-return tripService.saveAction(action);}}

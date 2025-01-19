@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +26,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +40,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "tracking" })
 @Entity
 @Table(name = "trips")
 public class Trip implements Serializable {
@@ -54,38 +58,37 @@ public class Trip implements Serializable {
 		RESERVED, RESCHEDULED, CANCELLED, DONE
 	}
 
-	// El campo id es la clave primaria de la tabla
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false, updatable = false)
-	@NotNull
-	@JsonProperty("id") // Nombre del campo en el JSON
+	@NotNull(message = "ID cannot be null")
+	@JsonProperty("id")
 	private Long id;
 
-	// Nombre del cliente (se traducirá)
 	@Column(name = "client_username", length = 25, nullable = false)
-	@NotEmpty
-	@NotNull
-	@JsonProperty("client") // Nombre del campo en el JSON
+	@NotEmpty(message = "Client username is required")
+	@NotNull(message = "Client username cannot be null")
+	@JsonProperty("client")
+	@Size(max = 25, message = "Client username cannot be longer than 25 characters")
 	private String client;
 
 	@Column(name = "places", nullable = false)
-	@NotNull
-	@JsonProperty("places") // Nombre del campo en el JSON
+	@NotNull(message = "Places cannot be null")
+	@JsonProperty("places")
 	private int places;
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "departure_id", referencedColumnName = "id", nullable = false)
-	@NotNull
-	@JsonProperty("departure") // Nombre del campo en el JSON
-	@JsonManagedReference // Evita la serialización recursiva y maneja la relación correctamente
+	@JsonProperty("departure")
+	@JsonManagedReference
 	private Departure departure;
 
-	@OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@Singular("track")
-	@JsonProperty("tracking") // Nombre del campo en el JSON
-	@JsonBackReference // Evita la serialización recursiva en el lado de la lista de acciones
+	@JsonProperty("tracking")
+	@JsonBackReference
+	@JsonIgnore
 	private List<Action> tracking;
 
 	@Enumerated(EnumType.STRING)
@@ -94,6 +97,7 @@ public class Trip implements Serializable {
 			+ "FROM actions a WHERE a.trip_id = id AND a.date = " + "  (SELECT MAX(last.date) FROM actions last "
 			+ "   WHERE last.trip_id = a.trip_id))")
 	@Setter(AccessLevel.NONE)
-	@JsonProperty("status") // Nombre del campo en el JSON
+	@JsonProperty("status")
+	@JsonIgnore
 	private Status status;
 }

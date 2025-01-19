@@ -66,6 +66,41 @@ public class TripServiceImpl implements TripService {
 		return tripRepository.findAllByFilters(category, status, username, from, to);
 	}
 
+//	@Override
+//	public Trip save(@NotNull @Valid Trip trip) {
+//		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
+//			throw new ForbiddenException(
+//					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+//		}
+//
+//		if (tripRepository.existsById(trip.getId())) {
+//			throw new ValidationException(messageSource.getMessage("error.UserService.username.exists",
+//					new String[] { trip.getId().toString() }, LocaleContextHolder.getLocale()));
+//		}
+//
+//		return tripRepository.saveAndFlush(trip);
+//	}
+
+	@Override
+	public boolean existsById(@NotNull Long id) {
+		return tripRepository.existsById(id);
+	}
+
+//	@Override
+//	public Action saveAction(@NotNull @Valid Action action) {
+//		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
+//			throw new ForbiddenException(
+//					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
+//		}
+//
+//		if (actionRepository.existsById(action.getId())) {
+//			throw new ValidationException(messageSource.getMessage("error.UserService.username.exists",
+//					new String[] { action.getId().toString() }, LocaleContextHolder.getLocale()));
+//		}
+//
+//		return actionRepository.saveAndFlush(action);
+//	}
+
 	@Override
 	public Trip save(@NotNull @Valid Trip trip) {
 		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
@@ -82,22 +117,14 @@ public class TripServiceImpl implements TripService {
 	}
 
 	@Override
-	public boolean existsById(@NotNull Long id) {
-		return tripRepository.existsById(id);
-	}
-
-	@Override
 	public Action saveAction(@NotNull @Valid Action action) {
-		if (!(jwtUtils.isAdmin() || jwtUtils.isClient())) {
-			throw new ForbiddenException(
-					messageSource.getMessage("error.Forbidden.users.find", null, LocaleContextHolder.getLocale()));
-		}
+		// Verifica si el trip existe
+		Trip trip = tripRepository.findById(action.getTrip().getId()).orElseThrow();
 
-		if (actionRepository.existsById(action.getId())) {
-			throw new ValidationException(messageSource.getMessage("error.UserService.username.exists",
-					new String[] { action.getId().toString() }, LocaleContextHolder.getLocale()));
-		}
+		// Asocia el trip a la acción
+		action.setTrip(trip);
 
+		// Guarda la acción
 		return actionRepository.saveAndFlush(action);
 	}
 
